@@ -159,7 +159,7 @@
 %%%%%%%%%%%%%%%% ABSTRACT %%%%%%%%%%%%%%%%
 
 \hrule height 0.2pt  \vspace{4mm}
-\noindent{{\Large{Task}}}\\ 
+\noindent{{\Large{Project}}}\\ 
 \@abstract
 \vfill \hrule height 0.2pt \vspace{3mm}
 
