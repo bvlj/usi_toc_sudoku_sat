@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Saluto</title>
+<style>
+table {
+  margin:1em auto;
+}
+td {
+  height:30px;
+  width:30px;
+  border:1px solid;
+  text-align:center;
+}
+td:first-child {
+  border-left:solid;
+}
+td:nth-child(3n) {
+  border-right:solid ;
+}
+tr:first-child {
+  border-top:solid;
+}
+tr:nth-child(3n) td {
+  border-bottom:solid ;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input {
+  width: 1em;
+  text-align: center;
+  border: none;
+  font-size: 1.1em;
+  border-bottom: 1px solid gray;
+}
+</style>
+  <script>
+    const $ = x => document.querySelector(x);
+    function solve(e) {
+      var board = []
+      for (var i = 0; i < 9; i++) {
+        var row = [];
+        for (var j = 0; j < 9; j++) {
+          row.push($(`#x${i}${j}`).value);
+        }
+        board.push(row.join(','));
+      }
+
+      board = board.join(';');
+      console.log(board);
+
+      fetch('/solve_sudoku?board=' + escape(board), {method: "POST"})
+        .then(console.log)
+        .catch(console.error);
+    };
+  </script>
+  </head>
+  <body>
+    <h1>Benvenuti nel sito della Prof. Sharygina</h1>
+    <p>Ciao a tutti!</p>
+    <div>
+      <table>
+        <script>
+          var input = (i,j) => `<input id="x${i}${j}" min="1" max="9" step="1"
+              type="number"/>`;
+
+          for (var i = 0; i < 9; i++) {
+            document.write("<tr>");
+            for (var j = 0; j < 9; j++) {
+              document.write(`<td>${input(i, j)}</td>`);
+            }
+            document.write("</tr>");
+          }
+        </script>
+      </table>
+    </div>
+    <button id="submit" onclick="solve()">Solve!</button>
+  </body>
+</html>
+<!-- vim: set ts=2 sw=2 et tw=80: -->
