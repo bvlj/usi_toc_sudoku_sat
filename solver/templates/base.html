@@ -75,8 +75,8 @@ input {
         .then(res => res.json())
         .then(json => {
           console.log(json)
-          $('#sol').innerHTML = json.solution ? "Yes!" : "No :(";
-          if (json.solution) {
+          $('#sol').innerHTML = json.sat ? "Yes!" : "No :(";
+          if (json.sat) {
             for (let key in json.model){
               console.log(key);
               $(`#${key}`).value = json.model[key];
