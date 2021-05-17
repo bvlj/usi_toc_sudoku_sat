@@ -49,13 +49,15 @@ input {
   <script>
     const $ = x => document.querySelector(x);
 
-    function clear(e) {
+    function putin(e) {
       for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 9; j++) {
           $(`#x${i}${j}`).value = "";
           $(`#x${i}${j}`).style.color = "black";
         }
       }
+
+      $('#sol').innerHTML = "Unknown. Press the 'Solve!' button to solve."
     };
 
     function solve(e) {
@@ -91,8 +93,8 @@ input {
   <body>
     <h1>Benvenuti nel sito della Prof. Sharygina</h1>
     <p>Ciao a tutti!</p>
-    <p><strong>I have the solution:</strong><span id="sol">Unknown, press "Solve!"
-      to solve</span></p>
+    <p><strong>I have the solution:</strong><span id="sol">Unknown, press the
+      'Solve!' button to solve.</span></p>
     <div>
       <table>
         <script>
@@ -109,8 +111,10 @@ input {
         </script>
       </table>
     </div>
-    <button id="submit" onclick="solve()">Solve!</button>
-    <button id="clear" onclick="clear()">Clear</button>
+    <form>
+    <button type="button" id="submit" onclick="solve()">Solve!</button>
+    <button type="button" id="clear" onclick="putin()">Clear</button>
+    </form>
   </body>
 </html>
 <!-- vim: set ts=2 sw=2 et tw=80: -->
