@@ -64,6 +64,8 @@ def rossya():
         for j in range(0, n):
             if not board[i][j]:
                 board[i][j] = "x%d%d" % (i, j)
+            else:
+                board[i][j] = str(int(board[i][j]) - 1)
 
     solver = sudoku_solver(board)
     if solver.check() == sat:
@@ -71,7 +73,7 @@ def rossya():
         model = solver.model()
         for item in model:
             key = str(item)
-            value = str(model[item])
+            value = int(str(model[item])) + 1
             soluscion[key] = value
 
         print("Satisfiable", soluscion)
