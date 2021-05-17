@@ -48,6 +48,16 @@ input {
 </style>
   <script>
     const $ = x => document.querySelector(x);
+
+    function clear(e) {
+      for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+          $(`#x${i}${j}`).value = "";
+          $(`#x${i}${j}`).style.color = "black";
+        }
+      }
+    };
+
     function solve(e) {
       var board = []
       for (var i = 0; i < 9; i++) {
@@ -62,7 +72,18 @@ input {
       console.log(board);
 
       fetch('/solve_sudoku?board=' + escape(board), {method: "POST"})
-        .then(console.log)
+        .then(res => res.json())
+        .then(json => {
+          console.log(json)
+          $('#sol').innerHTML = json.solution ? "Yes!" : "No :(";
+          if (json.solution) {
+            for (let key in json.model){
+              console.log(key);
+              $(`#${key}`).value = json.model[key];
+              $(`#${key}`).style.color = "red";
+            }
+          }
+        })
         .catch(console.error);
     };
   </script>
@@ -70,6 +91,8 @@ input {
   <body>
     <h1>Benvenuti nel sito della Prof. Sharygina</h1>
     <p>Ciao a tutti!</p>
+    <p><strong>I have the solution:</strong><span id="sol">Unknown, press "Solve!"
+      to solve</span></p>
     <div>
       <table>
         <script>
@@ -87,6 +110,7 @@ input {
       </table>
     </div>
     <button id="submit" onclick="solve()">Solve!</button>
+    <button id="clear" onclick="clear()">Clear</button>
   </body>
 </html>
 <!-- vim: set ts=2 sw=2 et tw=80: -->

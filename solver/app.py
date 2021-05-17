@@ -2,7 +2,8 @@ from flask import Flask
 from flask import request
 from flask import render_template
 import numpy as np
-from z3 import And, Bool, Int, Or, solve
+from z3 import And, Bool, Int, Or, Solver, unsat, unknown
+from flask import jsonify
 
 def is_valid(*data: str):
     x = []
@@ -11,8 +12,6 @@ def is_valid(*data: str):
             x.append(int(data[i]))
         else:
             x.append(Int(data[i]))
-
-    print(x)
 
     and_args = []
     for d in range(0, 9):
@@ -50,8 +49,20 @@ def solve_sudoku(sudoku):
                                           sudoku[i + 2][j],
                                           sudoku[i + 2][j + 1],
                                           sudoku[i + 2][j + 2]))
-
-    return solve(And(And(*rows_check), And(*columns_check), And(*squares_check)))
+    s = Solver()
+    s.add(And(And(*rows_check), And(*columns_check), And(*squares_check),
+        Bool("k!0" == ))
+    r = s.check()
+    if r == unsat or r == unknown:
+        return {"solution": False}
+    else:
+        m = s.model()
+        ihavethesolution = {}
+        for d in m:
+            if str(d)[0] != "x":
+                continue
+            ihavethesolution[str(d)] = str(m[d])
+        return {"solution": True, "model": ihavethesolution}
 
 
 app = Flask(__name__)
@@ -61,12 +72,14 @@ app = Flask(__name__)
 def hello_world():
     return render_template('base.html')
 
+
 @app.route('/solve_sudoku', methods=['POST'])
 def rossya():
+    print("\n\n\n\n\n\n\n\n\n")
     board = [x.split(',') for x in request.args.get('board').split(';')]
     for i in range(0, len(board)):
         for j in range(0, len(board[i])):
             if not board[i][j]:
                 board[i][j] = "x%d%d" % (i, j)
-    print(solve_sudoku(board))
-    return "malusa"
+    ihavethesolution = solve_sudoku(board)
+    return jsonify(ihavethesolution)
