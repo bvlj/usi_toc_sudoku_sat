@@ -1,126 +1,233 @@
 <!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="utf-8">
     <title>Sudoku solver</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.css">
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.js"></script>
     <style>
-        table {
-            margin: 1em auto;
-            border-spacing: 0;
-        }
-
-        td {
-            height: 30px;
-            width: 30px;
-            border: 1px solid;
-            padding: 0;
-            text-align: center;
-        }
-
-        td:first-child {
-            border-left: solid;
-        }
-
-        td:nth-child(3n) {
-            border-right: solid;
-        }
-
-        tr:first-child {
-            border-top: solid;
-        }
-
-        tr:nth-child(3n) td {
-            border-bottom: solid;
-        }
-
-        input {
-            width: 1em;
-            text-align: center;
-            border: none;
-            font-size: 1.1em;
-            border-bottom: 1px solid gray;
-        }
-
-        /* Disable arrows in number input */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-    </style>
+.ui.menu {
+  border-radius: 0;
+}
+table {
+  margin: 1em auto;
+  border-spacing: 0;
+}
+td.ui.input > input {
+  text-align: center;
+}
+td.ui.input > input.blue {
+  color: white;
+  background: #2185D0;
+  font-weight: bold;
+}
+td.ui.input > input.red {
+  color: white;
+  background: #DB2828;
+  font-weight: bold;
+}
+@media print {
+td.ui.input > input.blue {
+  box-shadow: inset 0 0 0 1000px #83c7fc;
+}
+td.ui.input > input.red {
+  box-shadow: inset 0 0 0 1000px #DB2828;
+}
+}
+td {
+  height: 40px;
+  width: 40px;
+  padding: 0;
+  margin: 0.1rem;
+  text-align: center;
+}
+td:first-child {
+  margin-left: 0.5rem;
+}
+td:nth-child(3n) {
+  margin-right: 0.5rem;
+}
+tr:first-child {
+  margin-top: 0.5rem;
+}
+tr:nth-child(3n) td {
+  margin-bottom: 0.5rem;
+}
+/* Disable arrows in number input */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+@media print {
+  .pino {display: none}
+  .intro {display: none}
+  .menu {display: none !important}
+}
+</style>
 
     <script>
-    const $ = x => document.querySelector(x);
+      const $ = x => document.querySelector(x);
 
-    function putInBoard(e) {
-      for (let i = 0; i < 9; i++) {
-        for (let j = 0; j < 9; j++) {
-          $(`#x${i}${j}`).value = "";
-          $(`#x${i}${j}`).style.color = "black";
-        }
+function putInBoard(sol) {
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      let a = $(`#x${i}${j}`);
+      if (sol || a.classList.contains("blue") || a.classList.contains("red")) {
+        a.value = "";
+        a.classList.remove("blue");
+        a.classList.remove("red");
       }
+    }
+  }
 
-      $('#sol').innerHTML = "Fill the sudoku board and press the <i>Solve!</i> button to solve.";
-    };
+  let a = $('#status').classList;
+  a.add("info");
+  a.remove("error");
+  a.remove("success");
+  $('#solh').innerHTML = "Waiting for input";
+  $('#sol').innerHTML = "Fill the sudoku board and press the <i>Solve!</i> button to solve.";
+};
 
-    function solve(e) {
-      var board = []
-      for (var i = 0; i < 9; i++) {
-        var row = [];
-        for (var j = 0; j < 9; j++) {
-          row.push($(`#x${i}${j}`).value);
-        }
-        board.push(row.join(','));
+function solve(e) {
+  e.preventDefault();
+  var board = []
+  for (var i = 0; i < 9; i++) {
+    var row = [];
+    for (var j = 0; j < 9; j++) {
+      row.push($(`#x${i}${j}`).value);
+    }
+    board.push(row.join(','));
+  }
+
+  board = board.join(';');
+  console.log(board);
+
+  fetch('/solve_sudoku?board=' + escape(board), {method: "POST"})
+    .then(res => res.json())
+    .then(json => {
+      console.log(json);
+      let a = $('#status').classList;
+      a.remove("info");
+      a.remove("error");
+      a.remove("success");
+
+      if (json.sat) {
+        $('#sol').innerHTML = "Please check out the blue cells below for how to fill your sudoku.";
+        $('#solh').innerHTML = "The SAT Solver says: \"I have the solution!\"";
+        a.add("success");
+      } else {
+        $('#sol').innerHTML = `Please clear this board and retry with another
+        sudoku.`;
+        $('#solh').innerHTML = "The SAT Solver says: \"Sorry, the Sudoku is unsolvable!\"";
+        a.add("error");
       }
-
-      board = board.join(';');
-      console.log(board);
-
-      fetch('/solve_sudoku?board=' + escape(board), {method: "POST"})
-        .then(res => res.json())
-        .then(json => {
-          console.log(json);
-          $('#sol').innerHTML = json.sat ? "Satisfiable" : "Unsatisfiable";
-          if (json.sat) {
-            for (let key in json.model) {
-              $(`#${key}`).value = json.model[key];
-              $(`#${key}`).style.color = "blue";
-            }
+      if (json.sat) {
+        for (let key in json.model) {
+          $(`#${key}`).value = json.model[key];
+          $(`#${key}`).classList.add("blue");
+        }
+      } else {
+        for (let i = 0; i < 9; i++) {
+          for (let j = 0; j < 9; j++) {
+            let a = $(`#x${i}${j}`);
+            if (!a.value) a.classList.add("red");
           }
-        })
-        .catch(console.error);
-    };
+        }
+      }
+    })
+    .catch(console.error);
+};
     </script>
-</head>
+  </head>
 
-<body>
-<h1>Sudoku SAT Solver</h1>
-<p><span id="sol">Fill the sudoku board and press
-    the <i>Solve!</i> button to solve.</span></p>
-<div>
-    <table>
-        <script>
-          let input = (i,j) => `<input id="x${i}${j}" min="1" max="9" step="1"
-              type="number"/>`;
+  <body class="full height">
+    <div class="ui inverted main menu">
+      <div class="ui container">
+        <div class="ui large secondary network menu">
+          <div class="item">
+            <div class="ui logo shape">
+              <div class="sides">
+                <div class="active ui side">
+                  <strong>Sudoku solver</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="right menu">
+            <div class="item">
+              By Joey Bevilacqua, Gianmarco De Vita, Claudio Maggioni
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <main class="ui container">
+      <div class="ui segment intro">
+        <h2 class="ui header">Solve sudoku with the power of SAT solvers</h2>
+        <p>To use the solver, fill the Sudoku board below with the given numbers
+        in the Sudoku you want to solve. You may leave the board empty as well.
+        Then, press the "Solve!" button and the remaining cells will be filled
+        in blue if the sudoku is solvable, otherwise an error message will pop
+        out.</p>
+        <p>If you want to change your Sudoku input after solving it, press the
+        "Clear solution" button to clear just the given blue cells and not your
+        input (in black).<p>
+      </div>
+      <div class="ui info message" id="status">
+        <div class="header" id="solh">Waiting for input</div>
+        <div class="message"><span id="sol">Fill the sudoku board and press
+            the <i>Solve!</i> button to solve.</span></div>
+      </div>
+      <form id="form" onsubmit="solve(event)">
+      <div class="ui segment">
+        <table>
+          <script>
+window.addEventListener('load', function(event) { putInBoard(true) });
 
-          for (let i = 0; i < 9; i++) {
-            document.write("<tr>");
-            for (let j = 0; j < 9; j++) {
-              document.write(`<td>${input(i, j)}</td>`);
-            }
-            document.write("</tr>");
-          }
+let input = (i,j) => `<input id="x${i}${j}" min="1" max="9" step="1"
+  type="number"/>`;
+
+for (let i = 0; i < 9; i++) {
+document.write("<tr>");
+for (let j = 0; j < 9; j++) {
+  document.write(`<td class="ui input">${input(i, j)}</td>`);
+}
+document.write("</tr>");
+}
         </script>
-    </table>
-</div>
-<form>
-    <button type="button" id="submit" onclick="solve()">Solve!</button>
-    <button type="button" id="clear" onclick="putInBoard()">Clear</button>
-</form>
-</body>
+        </table>
+      </div>
+      <div class="pino">
+        <button class="ui labeled icon blue button"
+                type="submit"
+                id="submit">
+          <i class="play icon"></i>
+          Solve!
+        </button>
+        <button class="ui labeled icon green button"
+                type="button" id="print" onclick="window.print()">
+          <i class="print icon"></i>
+          Print solution</button>
+        <button class="ui labeled icon orange button"
+                type="button" id="clear" onclick="putInBoard(false)">
+          <i class="eraser icon"></i>
+          Clear solution</button>
+        <button class="ui labeled icon red button"
+                type="button" id="clear" onclick="putInBoard(true)">
+          <i class="trash icon"></i>
+          Clear board</button>
+      </div>
+      </form>
+    </main>
+  </body>
 </html>
 <!-- vim: set ts=2 sw=2 et tw=80: -->
