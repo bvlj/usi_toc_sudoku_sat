@@ -1,55 +1,62 @@
 <!doctype html>
-<html lang="ru">
-  <head>
+<html lang="en">
+<head>
     <meta charset="utf-8">
-    <title>Saluto</title>
-<style>
-table {
-  margin:1em auto;
-}
-td {
-  height:30px;
-  width:30px;
-  border:1px solid;
-  text-align:center;
-}
-td:first-child {
-  border-left:solid;
-}
-td:nth-child(3n) {
-  border-right:solid ;
-}
-tr:first-child {
-  border-top:solid;
-}
-tr:nth-child(3n) td {
-  border-bottom:solid ;
-}
+    <title>Sudoku solver</title>
+    <style>
+        table {
+            margin: 1em auto;
+            border-spacing: 0;
+        }
 
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+        td {
+            height: 30px;
+            width: 30px;
+            border: 1px solid;
+            padding: 0;
+            text-align: center;
+        }
 
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
+        td:first-child {
+            border-left: solid;
+        }
 
-input {
-  width: 1em;
-  text-align: center;
-  border: none;
-  font-size: 1.1em;
-  border-bottom: 1px solid gray;
-}
-</style>
-  <script>
+        td:nth-child(3n) {
+            border-right: solid;
+        }
+
+        tr:first-child {
+            border-top: solid;
+        }
+
+        tr:nth-child(3n) td {
+            border-bottom: solid;
+        }
+
+        input {
+            width: 1em;
+            text-align: center;
+            border: none;
+            font-size: 1.1em;
+            border-bottom: 1px solid gray;
+        }
+
+        /* Disable arrows in number input */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+
+    <script>
     const $ = x => document.querySelector(x);
 
-    function putin(e) {
+    function putInBoard(e) {
       for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 9; j++) {
           $(`#x${i}${j}`).value = "";
@@ -57,7 +64,7 @@ input {
         }
       }
 
-      $('#sol').innerHTML = "Unknown. Press the 'Solve!' button to solve."
+      $('#sol').innerHTML = "Fill the sudoku board and press the <i>Solve!</i> button to solve.";
     };
 
     function solve(e) {
@@ -76,45 +83,44 @@ input {
       fetch('/solve_sudoku?board=' + escape(board), {method: "POST"})
         .then(res => res.json())
         .then(json => {
-          console.log(json)
-          $('#sol').innerHTML = json.sat ? "Yes!" : "No :(";
+          console.log(json);
+          $('#sol').innerHTML = json.sat ? "Satisfiable" : "Unsatisfiable";
           if (json.sat) {
-            for (let key in json.model){
-              console.log(key);
+            for (let key in json.model) {
               $(`#${key}`).value = json.model[key];
-              $(`#${key}`).style.color = "red";
+              $(`#${key}`).style.color = "blue";
             }
           }
         })
         .catch(console.error);
     };
-  </script>
-  </head>
-  <body>
-    <h1>Benvenuti nel sito della Prof. Sharygina</h1>
-    <p>Ciao a tutti!</p>
-    <p><strong>I have the solution:</strong><span id="sol">Unknown, press the
-      'Solve!' button to solve.</span></p>
-    <div>
-      <table>
+    </script>
+</head>
+
+<body>
+<h1>Sudoku SAT Solver</h1>
+<p><span id="sol">Fill the sudoku board and press
+    the <i>Solve!</i> button to solve.</span></p>
+<div>
+    <table>
         <script>
-          var input = (i,j) => `<input id="x${i}${j}" min="1" max="9" step="1"
+          let input = (i,j) => `<input id="x${i}${j}" min="1" max="9" step="1"
               type="number"/>`;
 
-          for (var i = 0; i < 9; i++) {
+          for (let i = 0; i < 9; i++) {
             document.write("<tr>");
-            for (var j = 0; j < 9; j++) {
+            for (let j = 0; j < 9; j++) {
               document.write(`<td>${input(i, j)}</td>`);
             }
             document.write("</tr>");
           }
         </script>
-      </table>
-    </div>
-    <form>
+    </table>
+</div>
+<form>
     <button type="button" id="submit" onclick="solve()">Solve!</button>
-    <button type="button" id="clear" onclick="putin()">Clear</button>
-    </form>
-  </body>
+    <button type="button" id="clear" onclick="putInBoard()">Clear</button>
+</form>
+</body>
 </html>
 <!-- vim: set ts=2 sw=2 et tw=80: -->
