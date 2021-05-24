@@ -2,6 +2,19 @@
 
 \usepackage{listings}
 \usepackage{tikz}
+\newcounter{row}
+\newcounter{col}
+
+\newcommand\setrow[9]{
+  \setcounter{col}{1}
+  \foreach \n in {#1, #2, #3, #4, #5, #6, #7, #8, #9} {
+    \edef\x{\value{col} - 0.5}
+    \edef\y{9.5 - \value{row}}
+    \node[anchor=center] at (\x, \y) {\n};
+    \stepcounter{col}
+  }
+  \stepcounter{row}
+}
 
 \usetheme{default}
 \beamertemplatenavigationsymbolsempty\setbeamersize{
@@ -57,6 +70,26 @@
 \maketitle
 \end{frame}
 }
+
+\begin{frame}
+\begin{figure}[h]
+\begin{center}
+\begin{tikzpicture}[scale=.7]
+  \begin{scope}
+    \draw (0, 0) grid (9, 9);
+    \draw[very thick, scale=3] (0, 0) grid (3, 3);
+
+    \setcounter{row}{1}
+    \foreach \i in {1,...,9}
+    {
+    \setrow {$c_{\i,1}$ }{$c_{\i,2}$}{$c_{\i,3}$}  {$c_{\i,4}$}{$c_{\i,5}$}{$c_{\i,6}$}  {$c_{\i,7}$}{$c_{\i,8}$}{$c_{\i,9}$}
+    }
+  \end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{A $9\times 9$ Sudoku puzzle.}
+\end{figure}
+\end{frame}
 
 \begin{frame}
 KTHXBYE
