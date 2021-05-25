@@ -1,5 +1,6 @@
 \documentclass[t,aspectratio=1610]{beamer}
 
+\usepackage{bxcjkjatype}
 \usepackage{listings}
 \usepackage{tikz}
 \newcounter{row}
@@ -70,6 +71,41 @@
 \maketitle
 \end{frame}
 }
+
+\begin{frame}
+\begin{figure}[h]
+\begin{center}
+\begin{tikzpicture}[scale=.7]
+  \begin{scope}
+    \draw (0, 0) grid (9, 9);
+    \draw[very thick, scale=3] (0, 0) grid (3, 3);
+
+    \setcounter{row}{1}
+    \setrow { }{ }{5}  {3}{ }{ }  { }{ }{ }
+    \setrow {8}{ }{ }  { }{ }{ }  { }{2}{ }
+    \setrow { }{7}{ }  { }{1}{ }  {5}{ }{ }
+    \setrow {4}{ }{ }  { }{ }{5}  {3}{ }{ }
+    \setrow { }{1}{ }  { }{7}{ }  { }{ }{6}
+    \setrow { }{ }{3}  {2}{ }{ }  { }{8}{ }
+    \setrow { }{6}{ }  {5}{ }{ }  { }{ }{9}
+    \setrow { }{ }{4}  { }{ }{ }  { }{3}{ }
+    \setrow { }{ }{ }  { }{ }{9}  {7}{ }{ }
+  \end{scope}
+\end{tikzpicture}
+\end{center}
+\caption{A $9\times 9$ Sudoku puzzle.}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\textbf{Sudoku} \\
+
+Although Sudoku is a Japanese word (\begin{uCJK}\UTF{6570}\UTF{72EC}\end{uCJK} – ``single digit''),
+Some sources state it was invented by the famous Swiss mathematician Euler.
+However, it is generally acknowledged that the origin of this game is European
+(around XIX century) and that the modern and common version has been realized
+in the US in the second half of the XX century named as ``Number Place''.
+\end{frame}
 
 \begin{frame}
 \begin{figure}[h]
