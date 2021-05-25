@@ -24,7 +24,31 @@
 
 
 \abstract {
-The aim of this project is to make an Encoder and Decoder for a SAT-solver in order to decide whether a problem is satisfiable or unsatisfiable. WRITE A BETTER ABSTRACT
+Sudoku is a Swiss game often confused as japanese because of its japanese
+sounding name.
+
+Sudokus are puzzles composed by numbers that are structured in a $9 \times 9$ table.
+At the beginning of the game the Sudoku board only a few cells contain numbers,
+which are ``randomly'' positioned in
+the table.
+
+The main purpose of the game is to fill the table without repeating numbers
+in a ``box'' or in the entire row or column of the table.
+
+The aim of this
+project is to make an Encoder and Decoder for a SAT-solver in order to decide
+whether a given input board is solvable or not, and when solvable to find a
+feasible solution.
+
+A Sudoku is valid when all of its rows are valid
+(each row must not have repeating numbers), when all of its columns
+are valid (each column must not have repeating numbers),
+and when all of the $3 \times 3$ boxes in the board are valid
+(each box must not have repeating numbers).
+
+To develop the code of the project
+we used Python3, specifically using the pip3 package z3-solver (official
+library to write logics for SAT solver).
 }
 
 % For Sudoku drawing
