@@ -1,6 +1,12 @@
 # SAT Sudoku
 
-## Setup
+ToC Lab 2 group 2:
+- Bevilacqua Joey
+- De Vita Gianmarco
+- Luini Alessandro
+- Maggioni Claudio
+
+## Run the project
 
 ```bash
 python3 -m venv .env

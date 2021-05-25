@@ -1,8 +1,10 @@
+import math
+
 from flask import Flask, jsonify, render_template, request
 from z3 import And, Int, Or, Solver, sat
 
 
-def is_valid(*data: str):
+def is_valid(max_val: int, *data: str):
     """
     Create SAT condition that ensures
     all the entries in the data array are
@@ -10,48 +12,50 @@ def is_valid(*data: str):
     mixed pre-filled and unknown variables)
     """
     x = []
-    for i in range(0, 9):
+    n = len(data)
+    for i in range(0, n):
         if data[i].isnumeric():
             x.append(int(data[i]))
         else:
             x.append(Int(data[i]))
 
     and_args = []
-    for d in range(0, 9):
+    for d in range(0, max_val):
         or_args = []
-        for i in range(0, 9):
+        for i in range(0, n):
             or_args.append(x[i] == d)
         and_args.append(Or(*or_args))
 
     return And(*and_args)
 
 
-def build_sudoku_solver(board):
+def build_sudoku_solver(board, n):
     """
     Return a solver for a
     given sudoku board
     """
     rows_check = []
-    for i in range(0, 9):
-        rows_check.append(is_valid(board[i][0], board[i][1], board[i][2],
-                                   board[i][3], board[i][4], board[i][5],
-                                   board[i][6], board[i][7], board[i][8]))
+    for i in range(0, n):
+        rows_check.append(is_valid(n, *board[i]))
+
     columns_check = []
-    for i in range(0, 9):
-        columns_check.append(is_valid(board[0][i], board[1][i], board[2][i],
-                                      board[3][i], board[4][i], board[5][i],
-                                      board[6][i], board[7][i],
-                                      board[8][i]))
+    for i in range(0, n):
+        args = []
+        for j in range(0, n):
+            args.append(board[j][i])
+        columns_check.append(is_valid(n, *args))
+
     squares_check = []
-    for i in range(0, 9, 3):
-        for j in range(0, 9, 3):
-            squares_check.append(is_valid(board[i][j], board[i][j + 1],
-                                          board[i][j + 2], board[i + 1][j],
-                                          board[i + 1][j + 1],
-                                          board[i + 1][j + 2],
-                                          board[i + 2][j],
-                                          board[i + 2][j + 1],
-                                          board[i + 2][j + 2]))
+    size_box = int(math.sqrt(n))
+    for i in range(0, n, size_box):
+        for j in range(0, n, size_box):
+            print("SQUARE %s %s" % (int(i / size_box), int(j / size_box)))
+            args = []
+            for q in range(0, size_box):
+                for w in range(0, size_box):
+                    args.append(board[i + q][j + w])
+            print(args)
+            squares_check.append(is_valid(n, *args))
 
     s = Solver()
     s.add(And(And(*rows_check), And(*columns_check), And(*squares_check)))
@@ -81,7 +85,7 @@ def app_solve():
                 board[i][j] = str(int(board[i][j]) - 1)
 
     # Build the solver
-    solver = build_sudoku_solver(board)
+    solver = build_sudoku_solver(board, n)
 
     if solver.check() == sat:
         solution = {}
