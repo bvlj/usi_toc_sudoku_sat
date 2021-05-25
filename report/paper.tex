@@ -46,16 +46,16 @@ The aim of this project is to make an Encoder and Decoder for a SAT-solver in or
 \begin{document}
 \maketitle
 \tableofcontents
+\listoffigures
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction} \label{introduction}
 Even though Sudoku is a Japanese word, literally meaning "single digit", according to some sources it was actually invented in Switzerland by the already famous mathematician Euler from Basel. However, it is generally acknowledged that the origin of this game is European (around XIX century) and that the modern and common version has been realized in the United States in the second half of the XX century named as "Number Place", from which it spread across the globe, even in Japan, where it took the famous name it is known with.\\ \\
 The aim of this homework is to make an Encoder and Decoder for a SAT-solver in order to decide whether a problem is satisfiable or unsatisfiable.
-\newpage
-\section{Problem definition} \label{problem}
+\subsection{Problem definition} \label{problem}
 Sudokus are puzzles based upon number placement. They are classically structured in a $9\times 9$ grid with 81 cells, divided into $3\times 3$ boxes. In order to be satisfiable, the following statements must hold:
 \begin{itemize}%[label={(\arabic*)}]
-\item In every cell there is exactly one number $c \in \{1,2,3,4,5,6,7,8,5,6,7,8, 9 \}$
+\item In every cell there is exactly one number $c \in \{1,2,3,4,5,6,7,8,9 \}$
 \item No number may appear more than once in the same row.
 \item No number may appear more than once in the same column.
 \item No number may appear more than once in the same box.
@@ -176,6 +176,20 @@ Let \textbf{is\_valid} define whether a row, column or box is valid. That means 
 	= 9 \vee  c_6  = 9 \vee  c_7  = 9 \vee  c_8  = 9 \vee  c_9 = 9  \right)\\
 \Leftrightarrow & \bigwedge^9_{n=1}  \bigvee^9_{i=1} \,\,\, c_i = n
 \end{align*}
+\hspace{0cm}\\
+\noindent
+This definition follows by the pigeon hole principle. Our aim is to check if the
+nine inputs of \texttt{is\_valid} contain each one digit in
+$\{1,2,3,4,5,6,7,8,9\}$. Each of the OR-clauses enclosed in brackets check if
+each digit is present at least one time, but since we have 9 clauses it follows
+that if even a single duplicate digit is given then at least an OR-clause will
+have false value. If we imagine each OR-clause is a ``hole'' in which we deposit
+digit, in this case the ``hole'' corresponding to the duplicate digit will be
+``fed'' twice, and since we have only 9 ``holes'' and 9 ``pigeons'', the
+duplicate will cause a ``hole'' to be void of ``pigeons'', thus making the
+entire \texttt{is\_valid} formula false and correctly rejecting the invalid
+input.
+\hspace{0cm}\\
 
 \noindent
 Now, since we have given a definition of valid, we can say that a Sudoku is valid if and only if:
@@ -211,7 +225,10 @@ First of all, we want to translate the following definition into Python3 \texttt
 
 \noindent
 Here we build three list of conditions that should all be satisfied: the first condition guarantees that each row does not contain any repeated element within itself. The second condition guarantees that each column does not contain any repeated element while the third one, as described previously
-in section~\ref{problem}, guarantees the uniqueness of each element in the 9 boxes of our Sudoku board. Now, it follows the pseudo-code algorithm that we designed and was used as a basis for the \texttt{z3–solver} API in the Python3 implementation.
+in section~\ref{problem}, guarantees the uniqueness of each element in the 9 boxes of our Sudoku board.
+
+\subsection{The build solver algorithm}
+Below it follows the pseudo-code algorithm that we designed and was used as a basis for the \texttt{z3–solver} API in the Python3 implementation.
 \begin{algorithm}[H]
 \hspace*{\algorithmicindent} \textbf{Input}: $c$, Sudoku board. \\
 \hspace*{\algorithmicindent} \textbf{Output}: $s$, solver.
@@ -239,7 +256,7 @@ in section~\ref{problem}, guarantees the uniqueness of each element in the 9 box
 \caption {Build Solver Algorithm}
 \end{algorithm}
 
-\newpage
+\subsection{The \texttt{is\_valid} function}
 \noindent
 Now we want to write the $ is\_valid $ formulation as Python3 \texttt{z3–solver}
 code:
@@ -272,7 +289,7 @@ code:
 \Return {$\textsc{And(andArgs)}$}
 \EndFunction
 \end{algorithmic}
-\caption {Build Solver Algorithm}
+	\caption {\texttt{is\_valid} Algorithm}
 \end{algorithm}
 
 \newpage
@@ -311,7 +328,13 @@ instance of the Sudoku SAT Solver project.
 
 \newpage
 
-\section{Trials}\label{trials}
+\section{Tests and examples}\label{trials}
+
+In this section we aim to test the Sudoku SAT solver with some Sudoku examples
+and edge cases in order to better show the algorithm and GUI's behaviour.
+
+Please
+find in the figure below the Sudoku examples.
 
 \begin{figure}[ht]
 \centering
@@ -346,7 +369,7 @@ instance of the Sudoku SAT Solver project.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.8\textwidth]{pics/input_check.png}
-\caption{Errors if a number is not in $ \left[ 1, 9 \right] $}
+\caption{Errors if a number is not in $ \left[ 1, 2,3,4,5,6,7,8, 9 \right] $}
 \end{figure}
 
 \begin{figure}[ht]
