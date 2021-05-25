@@ -79,7 +79,7 @@ def app_solve():
         for j in range(0, n):
             if not board[i][j]:
                 # Make a new unknown variable
-                board[i][j] = "x%d%d" % (i, j)
+                board[i][j] = "x%dy%d" % (i, j)
             else:
                 # Pre-filled cell
                 board[i][j] = str(int(board[i][j]) - 1)

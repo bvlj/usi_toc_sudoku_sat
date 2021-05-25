@@ -317,7 +317,30 @@ code:
 	\caption {\texttt{is\_valid} Algorithm}
 \end{algorithm}
 
+\subsection{Supporting other board configurations}
+
+In order to support different board configurations that are not of size
+$ 9 \times 9 $, we have to make a number of considerations to figure out
+which sizes we can support:
+First, we know that the highest value that a cell may contain is equal to the
+number of cells in each row (or column): in the ``base'' case of the
+$ 9 \times 9 $ grid, in fact the highest value is 9.
+Now, since we have to fit the exact same number of (distinct) elements both
+in a single row, in a single column and in the ``inner box'', we have to
+be able to construct such ``inner box'' that allow us to fill them with a number
+of element equal to the number or cells per row (or column).
+
+Having these constraints at hand, it is clear how the Sudoku game, with the
+(standard) rule set that has been applied through this project is possible only
+when the grid is of size $ n \times n $ where $ n $ is a perfect square number
+(i.e. $ 9 $ is a perfect square number since it's $ 9 = 3^2 $).
+This happens because the ``inner squares'' have to be of size $ \sqrt{n} $
+in order to have $ \sqrt{n} $ of them in each row: this is needed because
+if we have a square with side of length $ \sqrt{n} $, its area is
+$ \sqrt{n}^2 = n $, meaning we can fit in it $ n $ different elements.
+
 \newpage
+
 \section{Instructions for running}
 
 In order to run the Sudoku SAT solver, you first need to install Python3
@@ -395,6 +418,18 @@ find in the figure below the Sudoku examples.
 \centering
 \includegraphics[width=0.8\textwidth]{pics/input_check.png}
 \caption{Errors if a number is not in $ \left[ 1, 2,3,4,5,6,7,8, 9 \right] $}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.8\textwidth]{pics/grid_4.png}
+\caption{A $ 4 \times 4 $ satisfiable board}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.8\textwidth]{pics/grid_16.png}
+\caption{A $ 16 \times 16 $ unsatisfiable board}
 \end{figure}
 
 \begin{figure}[ht]

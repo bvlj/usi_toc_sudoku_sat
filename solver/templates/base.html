@@ -49,13 +49,13 @@ td {
 td:first-child {
   margin-left: 0.5rem;
 }
-td:nth-child(3n) {
+td:last-child {
   margin-right: 0.5rem;
 }
 tr:first-child {
   margin-top: 0.5rem;
 }
-tr:nth-child(3n) td {
+tr:last-child td {
   margin-bottom: 0.5rem;
 }
 /* Disable arrows in number input */
@@ -81,7 +81,7 @@ function putInBoard(sol) {
   const n = Math.pow($("#sizer").value, 2)
   for (let i = 0; i < n; i++) {
     for (let j = 0; j < n; j++) {
-      let a = $(`#x${i}${j}`);
+      let a = $(`#x${i}y${j}`);
       if (sol || a.classList.contains("blue") || a.classList.contains("red")) {
         a.value = "";
         a.classList.remove("blue");
@@ -105,7 +105,7 @@ function solve(e) {
   for (var i = 0; i < n; i++) {
     var row = [];
     for (var j = 0; j < n; j++) {
-      row.push($(`#x${i}${j}`).value);
+      row.push($(`#x${i}y${j}`).value);
     }
     board.push(row.join(','));
   }
@@ -141,7 +141,8 @@ function solve(e) {
         const n = Math.pow($("#sizer").value, 2);
         for (let i = 0; i < n; i++) {
           for (let j = 0; j < n; j++) {
-            let a = $(`#x${i}${j}`);
+            let a = $(`#x${i}y${j}`);
+            if (i === 11) console.log(a);
             if (!a.value) a.classList.add("red");
           }
         }
@@ -153,7 +154,7 @@ function solve(e) {
 function buildBoard(n) {
   const size = n || 9;
   let boardContent = "";
-  let input = (i,j) => `<input id="x${i}${j}" min="1" max="n" step="1" type="number"/>`;
+  let input = (i,j) => `<input id="x${i}y${j}" min="1" max="n" step="1" type="number"/>`;
 
   for (let i = 0; i < n; i++) {
     boardContent += "<tr>";
@@ -204,7 +205,7 @@ function buildBoard(n) {
         <div class="message"><span id="sol">Fill the sudoku board and press
             the <i>Solve!</i> button to solve.</span></div>
       </div>
-      <div class="ui">
+      <div class="ui segment">
           <label for="sizer">Board size: <span id="boardSize">9</span></label>
           <input id="sizer" type="range" min="1" max="5" step="1" value="3">
           <script>

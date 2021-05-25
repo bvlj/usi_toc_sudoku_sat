@@ -178,6 +178,29 @@ apply it to all the nine rows, nine columns and nine boxes.
 \end{frame}
 
 \begin{frame}
+\textbf{Other board configurations} \\
+\vspace{1em}
+\begin{itemize}
+\item The side of the (square) board must be of length $ n^2 = m $
+      (board $ m \times m$):
+      \begin{itemize}
+      \item Required by the ``inner boxes'' rule: we have to include $ m $
+            elements in squares, while having $ m $ elements per row / column
+      \end{itemize}
+\vspace{1em}
+\item The logic remains the same
+\vspace{1em}
+\item Supported configurations:
+      \begin{enumerate}
+      \item $ 1 \times 1 $
+      \item $ 4 \times 4 $
+      \item $ 9 \times 9 $
+      \item $ 16 \times 16 $ (takes a very long time)
+      \end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
 \textbf{Development} \\
 \vfill
 \sidesplit{\includegraphics[width=\textwidth]{python3}}{\includegraphics[width=\textwidth]{z3}} {\includegraphics[width=\textwidth]{flask}}
