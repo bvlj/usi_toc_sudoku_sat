@@ -95,7 +95,7 @@ Often Sudoku puzzles are initialized with some values placed, leaving blank spac
     \draw[very thick, scale=3] (0, 0) grid (3, 3);
 
     \setcounter{row}{1}
-    \foreach \i in {1,...,9}
+    \foreach \i in {1,2,3,4,5,6,7,8,9}
     {
     \setrow {$c_{\i,1}$ }{$c_{\i,2}$}{$c_{\i,3}$}  {$c_{\i,4}$}{$c_{\i,5}$}{$c_{\i,6}$}  {$c_{\i,7}$}{$c_{\i,8}$}{$c_{\i,9}$}
     }
@@ -107,8 +107,8 @@ Often Sudoku puzzles are initialized with some values placed, leaving blank spac
 \noindent
 Assuming that every $c_{i,j}$ in the Sudoku grid in Figure 1 takes just a value in interval \{1,2,3,4,5,6,7,8,9\}, such solution can be considered valid if and only if the following conditions are satisfied:
 \begin{enumerate}[label={(\arabic*)}]
-\item In every row $i$ (i.e., $c_{i,1}$, $c_{i,2}$, ..., $c_{i,9}$) there is at least one element that takes one value in \{1,2,3,4,5,6,7,8,9\}, but all values from 1 to 9 must be taken. Since in a row there are only 9 elements, it means that there will be a one-to-one mapping from these row elements to the \{1,2,3,4,5,6,7,8,9\} set values, thus each row will be made of nine different numbers.
-\item In every column $j$ (i.e., $c_{1,j}$, $c_{2,j}$, ..., $c_{9,j}$) there is at least one element that takes one value in \{1,2,3,4,5,6,7,8,9\}, but all values from 1 to 9 must be taken. Since in a column there are only 9 elements, it means that there will be a one-to-one mapping from these column elements to the \{1,2,3,4,5,6,7,8,9\} set values, thus each column will be made of nine different numbers.
+\item In every row $i$ (i.e., $c_{i,1}$, $c_{i,2}$, $c_{i,3}$, $c_{i,4}$, $c_{i,5}$, $c_{i,6}$, $c_{i,7}$, $c_{i,8}$, $c_{i,9}$) there is at least one element that takes one value in \{1,2,3,4,5,6,7,8,9\}, but all values from 1 to 9 must be taken. Since in a row there are only 9 elements, it means that there will be a one-to-one mapping from these row elements to the \{1,2,3,4,5,6,7,8,9\} set values, thus each row will be made of nine different numbers.
+\item In every column $j$ (i.e., $c_{1,j}$, $c_{2,j}$, $c_{3,j}$, $c_{4,j}$, $c_{5,j}$, $c_{6,j}$, $c_{7,j}$, $c_{8,j}$, $c_{9,j}$) there is at least one element that takes one value in \{1,2,3,4,5,6,7,8,9\}, but all values from 1 to 9 must be taken. Since in a column there are only 9 elements, it means that there will be a one-to-one mapping from these column elements to the \{1,2,3,4,5,6,7,8,9\} set values, thus each column will be made of nine different numbers.
 \item In every box, no number may appear more than once. Since a box is made up by 9 elements, it means that each box will contain all the values within the \{1,2,3,4,5,6,7,8,9\} set. What requires a bit more of reasoning here is finding a generalizing way to define all the elements in a box for every box. While for rows and columns it suffices to use a matrix-like notation, here some background reasoning is needed. It can be noticed that, in every box, the following pattern can be observed:
 \begin{figure}[h]
 \begin{center}
@@ -176,7 +176,8 @@ It can be seen that the coordinates are nothing but all the possible permutation
 \newpage
 \section{Encoder and Decoder}\label{encdec}
 \noindent
-Let \textbf{is\_valid} define whether a row, column or box is valid. That means that the nine elements along a row, column or within a box must be different and equal to a digit in set $\{1,2,3,4,5,6,7,8,9\}$, thus meaning that a row, column or box is valid if it contains all digits. Let's consider $c_1,\,c_2,\,...,\,c_9$, which may be the elements within a row, column or box. Then we have:
+Let \textbf{is\_valid} define whether a row, column or box is valid. That means that the nine elements along a row, column or within a box must be different and equal to a digit in set $\{1,2,3,4,5,6,7,8,9\}$, thus meaning that a row, column or box is valid if it contains all digits.
+Let's consider $c_1,\,c_2,\,c_3,\,c_4,\,c_5,\,c_6,\,c_7,\,c_8,\,c_9$, which may be the elements within a row, column or box. Then we have:
 \begin{align*}
 \text{is\_valid}\left(  c_1,  c_2,  c_3,  c_4,  c_5,  c_6,  c_7,  c_8,  c_9
 	\right) \Leftrightarrow & \\
@@ -230,7 +231,7 @@ Therefore, the Sudoku problem for a 9x9 grid can be defined as:\\
 $\text{sudoku}\left( \{ c_{i,j} \}_{i, j \in \{ 1,2,3,4,5,6,7,8,9\}} \right) = $\begin{align}
 &\bigwedge^9_{i=1} \text{ is\_valid}\left(  c_{i,1},  c_{i,2},  c_{i,3},  c_{i,4},  c_{i,5},  c_{i,6},  c_{i,7},  c_{i,8},  c_{i,9}  \right)\\
 \wedge &\bigwedge^9_{j=1} \text{ is\_valid}\left( c_{1,j},  c_{2,j},  c_{3,j},  c_{4,j},  c_{5,j},  c_{6,j},  c_{7,j},  c_{8,j},  c_{9,j} \right) \\
-	\wedge &\bigwedge^9_{i,j \in \{1,\,4,\,7\}} \text{ is\_valid}\left( c_{i,1},
+	\wedge &\bigwedge^9_{i,j \in \{1,\,4,\,7\}} \text{ is\_valid}\left( c_{i,j},
 	c_{i,(j+1)},  c_{i,(j+2)}, c_{(i+1),j},  c_{(i+1),(j+1)},
 	c_{(i+1), (j+2)}, c_{(i+2),j},  c_{(i+2),(j+1)},  c_{(i+2),(j+2)} \right).
 \end{align}
@@ -241,10 +242,10 @@ For what concerns the z3 SAT solver, we have used the official \texttt{z3–solv
 The \texttt{z3–solver} Python3 library allows to specify constraints programmatically and is able to provide both information about the satisfiability information and data structure models that represent a valid solution for the problem.\\ \\
 First of all, we want to translate the following definition into Python3 \texttt{z3–solver} code:
 \begin{align*}
-\text{sudoku}\left( \{ c_{i,j} \}_{i, j \in \{ 1,...,9\}} \right) = & \nonumber\\
+\text{sudoku}\left( \{ c_{i,j} \}_{i, j \in \{ 1,2,3,4,5,6,7,8,9 \}} \right) = & \nonumber\\
        & \bigwedge^9_{i=1} \text{ is\_valid}\left(  c_{i,1},  c_{i,2},  c_{i,3},  c_{i,4},  c_{i,5},  c_{i,6},  c_{i,7},  c_{i,8},  c_{i,9}  \right)\\
 \wedge &\bigwedge^9_{j=1} \text{ is\_valid}\left( c_{1,j},  c_{2,j},  c_{3,j},  c_{4,j},  c_{5,j},  c_{6,j},  c_{7,j},  c_{8,j},  c_{9,j} \right) \\
-\wedge &\bigwedge^9_{i,j \in B} \text{ is\_valid}\left( c_{i,1},  c_{i,(j+1)},  c_{i,3},  c_{i,4},  c_{i,5},  c_{i,6},  c_{i,7},  c_{i,8},  c_{i,9} \right).
+\wedge &\bigwedge^9_{i,j \in B} \text{ is\_valid}\left( c_{i,j},  c_{i,(j+1)},  c_{i,(j+2)},  c_{(i+1),j},  c_{(i+1),(j+1)},  c_{(i+1),(j+2)},  c_{(i+2),j},  c_{(i+2),(j+1)},  c_{(i+2),(j+2)} \right).
 \end{align*}
 
 \noindent
@@ -287,7 +288,7 @@ code:
 
 \begin{align*}
 \text{is\_valid}\left(  c_1,  c_2,  c_3,  c_4,  c_5,  c_6,  c_7,  c_8,  c_9
-	\right) = \bigwedge^9_{i=1}  \bigvee^9_{i=1} \,\,\, c_i
+	\right) \Leftrightarrow \bigwedge^9_{n=1}  \bigvee^9_{i=1} \,\,\, c_i = n
 \end{align*}
 
 \begin{algorithm}[H]
