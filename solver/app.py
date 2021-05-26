@@ -49,12 +49,10 @@ def build_sudoku_solver(board, n):
     size_box = int(math.sqrt(n))
     for i in range(0, n, size_box):
         for j in range(0, n, size_box):
-            print("SQUARE %s %s" % (int(i / size_box), int(j / size_box)))
             args = []
             for q in range(0, size_box):
                 for w in range(0, size_box):
                     args.append(board[i + q][j + w])
-            print(args)
             squares_check.append(is_valid(n, *args))
 
     s = Solver()
